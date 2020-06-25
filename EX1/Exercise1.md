@@ -12,7 +12,7 @@ After completing this first exercise, you should be able to do the following:
 2. Understand what a mesh is in the context of numerical methods
 3. Understand the different methods of benchmarking and validating a model and simulation
 4. Perform basic visualisation of simulation results using the visualisation tools built into `FiPy` 
-5. Generate high quality plots for use in a report 
+5. Generate plots for use in a report 
 
 
 
@@ -210,5 +210,36 @@ Considering that the analytical solution is an infinite series, we need to trunc
 
 #### Solving the equation
 
-For the purposes of this problem, we shall not bother too much with how the solver is set 
+For the purposes of this problem, we shall not bother too much with how the solver is set up and we just use the default settings: 
 
+```python
+phi.equation.solve(var=phi)
+```
+
+
+
+#### Setting up the viewers 
+
+This is the required syntax to set up the default viewer. `FiPy` uses `matplotlib` for this purpose. 
+
+```python
+from fipy import input
+if __name__ == '__main__':
+    vi = Viewer(phi, colorbar=None)
+    vi.colorbar = _ColorBar(viewer=vi, vmin=0.0, vmax=1.0)
+    vi.plot()
+    input("Press <return> to proceed")
+
+
+# Setting up the second viewer for the analytical solution
+if __name__ == '__main__':
+    vi2 = Viewer(analytical, colorbar=None)
+    vi2.colorbar = _ColorBar(viewer=vi, vmin=0.0, vmax=1.0)
+    input("Press <return> to proceed")
+```
+
+
+
+### Post processing
+
+Fortunately there is not too much work that needs to be done for this exercise. The data is already nicely scaled and represented using the default viewer settings. The task then is to export the data from the viewer which 

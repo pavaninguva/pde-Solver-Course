@@ -157,16 +157,41 @@ $$
 a_{n} = 2 \int_{0}^{1} (x-1) \sin{(n\pi x)} \ dx, \ \ \  n=1,2,3 \dots
 $$
 This is a chore to evaluate. We employ the power of `WolframAlpha`! 
-
-This integral cleans up to: 
 $$
-a_{n} = \frac{2}{\pi^{2} n^{2}} \bigg[ \sin{(n \pi x)} - \pi n(x-1)\cos{(n \pi x)} \bigg]^{1}_{0}
-$$
-Which can be further simplified: 
-$$
-a_{n} = \frac{2}{\pi^{2}n^{2}}(\pi n) = \frac{2}{n \pi}, \ \ \ n = 1,2,3 \dots
+a_{n} = \frac{2}{\pi^{2}n^{2}}( \sin{(\pi n)} - \pi n) = \frac{-2}{n \pi}, \ \ \ n = 1,2,3 \dots
 $$
 Now that we have a nice clean expression for $a_{n}$, let us finally write down our full analytical solution to this problem. 
 $$
-c(x,t) = \phi(x,t) + c_{S.S.}(x) = 1 - x + \sum_{n=1}^{\infin}\frac{2}{n \pi} \sin{(n\pi x) e^{}}
+c(x,t) = \phi(x,t) + c_{S.S.}(x) = 1 - x - \sum_{n=1}^{\infin}\frac{2}{n \pi} \sin{(n\pi x) e^{-Dn^{2}\pi^{2} t}}
 $$
+
+### Numerical solution
+
+Setting up the problem for the most part is similar, the only difference being how the equation is defined and how time-stepping is performed. I will detail those two sections here for clarity. 
+
+#### Defining the equation
+
+We make use of the full time discretization scheme involving $\alpha$ as outlined above as this gives us the convenience of toggling between explicit and implicit time-stepping very easily
+
+```python
+eq = (TransientTerm() == DiffusionTerm(coeff= alpha* D) + ExplicitDiffusionTerm(coeff = (1.0 - alpha)*D))
+```
+
+We can now set $\alpha$ as a simulation parameter easily and not worry about rejigging the equation. 
+
+
+
+#### Time-stepping
+
+First we need to pick an $\alpha$ value. Suppose we pick $\alpha = 0$ for now, we can use our stability criteria as follows: 
+$$
+\Delta t = \frac{\Delta x ^{2}}{2D} \times (\% Margin) = \frac{4\times10^{-4}}{2.0} \times 0.9 = 0.00018
+$$
+
+
+Now that we have a time-step, the next question we need to figure out is how long to run the simulation for! Now that may seem like a straightforward question in that this should normally be pre-defined. But in this case, we dont immediately have a fixed value for the time taken for the system to reach steady state. So lets employ a bit of street-fighting for this:
+
+- Our simulation domain is $1m$ long
+- We set our diffusion coefficient to be $1 m^{2} / s$ 
+- So an approximation for the time taken for a molecule to diffuse across the entire domain is $ t \sim \frac{D}{L^{2}}$ by considering simple dimensional analysis. 
+- Therefore, the time would be approximately $1s$ 
