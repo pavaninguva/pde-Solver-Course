@@ -33,7 +33,7 @@ eq = (TransientTerm() == DiffusionTerm(coeff= alpha* D) + ExplicitDiffusionTerm(
 dt = 0.00018
 
 # We might not want to see the output from every single timestep, so we define a stride parameter
-time_stride = 50
+time_stride = 5
 timestep = 0
 run_time = 1
 
@@ -41,7 +41,7 @@ run_time = 1
 # We need to implement the analytical solution. We can do two solutions: 1) Full solution, 2) S.S. solution
 pi = numerix.pi
 x = mesh.cellCenters[0]
-t = timestep * dt
+t = Variable(0.0)
 
 # This part of the code may be a little too much, dont worry about it, essentially we are recreating the analytical solution
 
@@ -58,13 +58,15 @@ def analytical_expression (k):
     Approx = 1.0 - x + Fourier
     return Approx
 
-analytical_solution_transient = analytical_expression(50)
+analytical_solution_transient = analytical_expression(10)
+analytical_solution_transient.name = "Full Analytical Solution"
 
 # analytical_solution_transient = 0.5 + x - 100*t
 
 analytical_solution_steady = 1.0 - x
 
-analytical_transient = CellVariable(mesh=mesh, name="Full Analytical Solution", value = analytical_solution_transient, hasOld=1)
+# analytical_transient = CellVariable(mesh=mesh, name="Full Analytical Solution", value = analytical_solution_transient, hasOld=1)
+
 
 analytical_steady = CellVariable(mesh=mesh, name="Steady State Solution", value = analytical_solution_steady)
 
@@ -76,7 +78,7 @@ if __name__ == "__main__":
     viewer = Viewer(vars=(c, analytical_steady, analytical_solution_transient), datamin=0., datamax=1.)
 
 while t < run_time:
-    t += dt
+    t.value = t.value + dt
     timestep += 1
     eq.solve(var=c, dt=dt)
     if (timestep % time_stride ==0):
