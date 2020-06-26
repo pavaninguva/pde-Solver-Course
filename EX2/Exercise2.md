@@ -321,3 +321,46 @@ Once we have the `.csv` files, it is easy to then use the data to generate custo
 
 ### Results
 
+
+
+## Part 3
+
+The last part of this exercise introduces an additional complexity to the diffusion equation. We consider how a reaction might affect the transient profile of the concentration. We use the case outlined in part 2. The default viewer is used and you should be able to swap things out if you want to export the simulation data as a `.csv ` file in the future. 
+
+### Problem statement
+
+The model equation takes the form: 
+$$
+\frac{\partial c}{\partial t} = D \nabla^{2}c + \kappa c
+$$
+$\kappa$ is introduced as the rate constant. Essentially we have introduced a simple first order reaction. `FiPy` and other PDE solvers would typically require us to treat the reaction term as a source term. `FiPy` makes this rather easy. 
+
+We impose the same boundary conditions as before and start with the same initial conditions: 
+$$
+\frac{\partial c}{\partial x}(x=0, t) = 0
+\\
+\frac{\partial c}{\partial x}(x=1, t) = 0
+\\
+c(x, t=0) = 0.5 + 0.3\sin{(2\pi x)}
+$$
+The choice of the rate constant is typically constrained due to the physical nature of the parameter, but here we have the flexibility to experiment with different values of $\kappa$. 
+
+### Numerical implementation
+
+We first add a value for the rate constant:
+
+```python
+# Provide value for diffusion and reaction coefficient 
+D = 1.0
+k = -2.0
+
+```
+
+We then modify the equation to include the reaction term: 
+
+```python
+eq = TransientTerm() == DiffusionTerm(coeff=  D)  + ImplicitSourceTerm(coeff=k)
+```
+
+### Results
+
