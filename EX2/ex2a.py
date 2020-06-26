@@ -79,7 +79,6 @@ while t < run_time:
     t += dt
     timestep += 1
     eq.solve(var=c, dt=dt)
-    analytical_transient.updateOld()
     if (timestep % time_stride ==0):
         print ("Beep")
         if __name__ == '__main__':

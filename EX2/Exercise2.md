@@ -2,7 +2,7 @@
 
 In the first exercise, we solved a simple "steady-state" problem (i.e. there was no time derivative) in the problem. We will know look at one of the simplest transient problems that you should be familiar with from `Heat and Mass Transfer 1`. 
 
-This exercise is broken into two parts as we want to explore different aspects of the same equation system. In the first part, we focus more on how transient problems are tackled and we consider the case where Dirichlet boundary conditions are applied. In the second part, we approach the problem more from a transport perspective and how a reaction in the system can be modelled. 
+This exercise is broken into three parts as we want to explore different aspects of the same equation system. In the first part, we focus more on how transient problems are tackled and we consider the case where Dirichlet boundary conditions are applied. In the second part, we consider the solution of the diffusion equation with Neumann boundary conditions and in the third part, we consider how a reaction in the system can be modelled. 
 
 ## Learning objectives
 
@@ -195,3 +195,129 @@ Now that we have a time-step, the next question we need to figure out is how lon
 - We set our diffusion coefficient to be $1 m^{2} / s$ 
 - So an approximation for the time taken for a molecule to diffuse across the entire domain is $ t \sim \frac{D}{L^{2}}$ by considering simple dimensional analysis. 
 - Therefore, the time would be approximately $1s$ 
+
+We can set up the time-stepping! First we define a couple of parameters: 
+
+```python
+time_stride = 50
+timestep = 0
+run_time = 1
+```
+
+We introduce a time stride as we do not want to see the output from every single timestep. We then introduce a timestep counter and lastly define the total simulation run time.  We when initialize the viewer and use a while loop to advance in time:
+
+```python
+if __name__ == "__main__":
+    viewer = Viewer(vars=(c, analytical_steady, analytical_solution_transient), datamin=0., datamax=1.)
+
+while t < run_time:
+    t += dt
+    timestep += 1
+    eq.solve(var=c, dt=dt)
+    if (timestep % time_stride ==0):
+        if __name__ == '__main__':
+            viewer.plot()
+if __name__ == '__main__':
+    input("Press <return> to proceed...")
+```
+
+### Results
+
+
+
+
+
+## Part 2
+
+The second part of this exercise starts to move on to generating results in a manner that might be usable to you instead of the images we saw previously. At this point, you also have reasonable familiarity with how the diffusion problem can be benchmarked to analytical solutions, so we shall omit that. 
+
+### Problem statement
+
+We consider the same equation system: 
+$$
+\frac{\partial c}{\partial t} = D \nabla^{2}c
+$$
+However, we apply the no-flux boundary condition at both ends. This is a Neumann boundary condition. 
+$$
+\frac{\partial c}{\partial x}(x=0, t) = 0
+\\
+\frac{\partial c}{\partial x}(x=1, t) = 0
+$$
+We then supply an initial condition:
+$$
+c(x, t=0) = 0.5 + 0.3\sin{(2\pi x)}
+$$
+The steady state solution of this problem is as follows: 
+$$
+\lim_{t \to \infin} c(x, t) = 0.5
+$$
+
+### Numerical implementation
+
+Most of the code is the same as first problem with a couple of modifications to the boundary conditions and the initial conditions. 
+
+Initial conditions:
+
+```python
+x = mesh.cellCenters[0]
+c.value=0.0
+c.setValue((0.3*numerix.sin(2.0*x*numerix.pi)) + 0.5)
+```
+
+Boundary conditions:
+
+```python
+c.faceGrad.constrain(0.0, where=mesh.facesLeft)
+c.faceGrad.constrain(0.0, where=mesh.facesRight)
+```
+
+
+
+### Output
+
+So far, we have been using the default `Viewer` from `FiPy` which is based on `matplotlib`. This makes it adequate for quickly visualizing the simulation and taking occasional snapshots. But this is not very useful since we dont have access to the actual data. This is where we implement the `TSVViewer` which enables us to output the simulation data as a `.tsv` file which we then convert into a more usable format `.csv`: 
+
+```python
+if __name__ == "__main__":
+    vw = TSVViewer(vars=(c))
+
+while t < run_time:
+    t += dt
+    timestep += 1
+    eq.solve(var=c, dt=dt)
+    if (timestep % time_stride ==0):
+        print ("Beep")
+        if __name__ == '__main__':
+            vw.plot(filename="%s.tsv"%(t))
+if __name__ == '__main__':
+    input("Press <return> to proceed...")
+
+# The next section of code is to convert the tsv files into csv which is more useable:
+
+# We first generate a list of the tsv files in the current folder
+tsv_list = glob.glob("./*.tsv")
+
+# Next we use a for loop to go through the list
+for tsv in tsv_list:
+    csv_filename = tsv.replace("tsv", "csv")
+
+    # This is a hack to remove the first line of the tsv file 
+    with open(tsv, "r") as fin:
+        data = fin.read().splitlines(True)
+    with open(tsv, "w") as fout:
+        fout.writelines(data[1:])
+
+    # We read the tsv file into a dataframe
+    csv_table = pd.read_table(tsv, sep="\t")
+    csv_table.to_csv(csv_filename)
+
+    # Remove the tsv files
+    os.remove(tsv)
+```
+
+
+
+Once we have the `.csv` files, it is easy to then use the data to generate custom plates based on your needs. 
+
+### Results
+
