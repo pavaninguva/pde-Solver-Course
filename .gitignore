@@ -2,3 +2,6 @@
 *.png
 *.csv
 *.tsv
+
+# BS from Typora
+.~*

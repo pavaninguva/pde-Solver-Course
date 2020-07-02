@@ -69,5 +69,5 @@ if __name__ == '__main__':
 # Setting up the second viewer for the analytical solution
 if __name__ == '__main__':
     vi2 = Viewer(analytical, colorbar=None)
-    vi2.colorbar = _ColorBar(viewer=vi, vmin=0.0, vmax=1.0)
+    vi2.colorbar = _ColorBar(viewer=vi2, vmin=0.0, vmax=1.0)
     input("Press <return> to proceed")
