@@ -26,7 +26,6 @@ a = CellVariable (name=r"$a$", mesh=mesh, hasOld=1)
 mu_AB = CellVariable(name=r"$\mu_{AB}", mesh=mesh, hasOld=1)
 
 # Setting the initial composition of the system with noise
-# noise = GaussianNoiseVariable(mesh=mesh, mean=a_0, variance=noise_mag).value
 noise = UniformNoiseVariable(mesh=mesh, minimum=(a_0-noise_mag), maximum=(a_0+noise_mag))
 a[:] = noise
 

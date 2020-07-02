@@ -97,4 +97,72 @@ We can see how the the demixing occurred and small spherical particles appeared.
 
 Suppose we want to extract a 1D plot of the $a$ across a line. That can be done in Paraview quite easily. 
 
-We first highlight the data in the pipeline browser which in this `0_putput.vtk*` and 
+We first highlight the data in the pipeline browser which in this `0_putput.vtk*` and apply the `Plot Over Line` filter. 
+
+![Paraview_15](C:\Users\CE-KPI15\Projects\pde-Solver-Course\EX4\Paraview Tutorial\Paraview_15.png)
+
+On the `Properties` box on the left, we can see the settings for the plot. There is a line that appears that helps to visualise the line that will be used to plot. We need to define `Point 1` and `Point 2` in the `Properties` box which defines the start and end of the line. 
+
+![Paraview_16](C:\Users\CE-KPI15\Projects\pde-Solver-Course\EX4\Paraview Tutorial\Paraview_16.png)
+
+Once we picked a line that we desire. In this case, I want to plot across the center of the 2D domain as shown above, we just click `Apply` in the Properties box. This creates a new window where the plot is displayed. Both variables $a$ and $\mu_{AB}$ are present. This is essentially the same as doing a 1D simulation. 
+
+![Paraview_17](C:\Users\CE-KPI15\Projects\pde-Solver-Course\EX4\Paraview Tutorial\Paraview_17.png)
+
+Suppose we want to export the plotted data into an excel (.csv) file so that we can do our own plotting, that is readily achievable. In the pipeline browser, highlight the `PlotOverLine1` filter and click `File` -> `Export Scene`. We see that we can nicely export the data as a `.csv` file. 
+
+![Paraview_18](C:\Users\CE-KPI15\Projects\pde-Solver-Course\EX4\Paraview Tutorial\Paraview_18.png)
+
+
+
+## Evaluating the total Gibbs energy over time. 
+
+If we go through the notes for exercise 4, we can find the following integral which if evaluated lets us see how the total energy of the system evolves: 
+$$
+G_{system} = \int_{V} g(x_{1}) + \frac{\kappa}{2}(\nabla x_{1})^{2} dV
+$$
+We can use Paraview to evaluate this integral. However, the workflow is not so trivial as we can trivially evaluate the above integral using one step in Paraview. We have to break it down one step at a time. 
+
+We first need to create a separate variable to capture $\nabla x_{1}$. Select `CellDatatoPointData1` in the pipeline browser and apply the `Gradient of Unstructured Dataset` filter:
+
+![Paraview_19](C:\Users\CE-KPI15\Projects\pde-Solver-Course\EX4\Paraview Tutorial\Paraview_19.png)
+
+Select the desired variable you want to evaluate the gradient of which in this case is listed as `$a$` and give the new variable a name (I chose `$\nabla a$`). Click Apply. 
+
+![Paraview_20](C:\Users\CE-KPI15\Projects\pde-Solver-Course\EX4\Paraview Tutorial\Paraview_20.png)
+
+Now that we have access to the $\nabla x_{1}$, we can use the `Calculator` filter to calculate the following equation at each point: 
+$$
+G = g(x_{1}) + \frac{\kappa}{2}(\nabla x_{1})^{2}
+$$
+To apply the calculator filter, select the `GradientofUnstructuredDataset1` in the pipeline browser and select the `Calculator` filter as follows: 
+
+![Paraview_21](C:\Users\CE-KPI15\Projects\pde-Solver-Course\EX4\Paraview Tutorial\Paraview_21.png)
+
+We can then input the equation we need to calculate. You should note that $\nabla x_{1}$ is a vector and you should input its magnitude into the calculation. The variable name can be specified by changing the input in the `Result Array Name` field. 
+
+The formula is inputted as follows: 
+
+```
+(ln($a$)/1000) + (ln(1-$a$)/1000) + 0.006*$a$*(1-$a$) + 0.002*(mag($\nabla a$ ))^(2)
+```
+
+![Paraview_22](C:\Users\CE-KPI15\Projects\pde-Solver-Course\EX4\Paraview Tutorial\Paraview_22.png)
+
+We now have generated a Gibbs variable. We can proceed to integrate this variable. We can apply an `Integrate Variables` filter. Selected the `Calculator1` in the pipeline browser and apply the `Integrate Variables` filter as follows: 
+
+![Paraview_23](C:\Users\CE-KPI15\Projects\pde-Solver-Course\EX4\Paraview Tutorial\Paraview_23.png)
+
+When you click `Apply`, you should see a window pop up that gives a spreadsheet view and you can see our variable of interest `Gibbs`!!!: 
+
+![Paraview_24](C:\Users\CE-KPI15\Projects\pde-Solver-Course\EX4\Paraview Tutorial\Paraview_24.png)
+
+Now is the last step where we obtain the time series. We need to apply the `Plot Data Over Time ` filter. Selecte the `IntegrateVariables1` filter in the pipeline browser and apply the `Plot Data Over Time` filter: 
+
+![Paraview_25](C:\Users\CE-KPI15\Projects\pde-Solver-Course\EX4\Paraview Tutorial\Paraview_25.png)
+
+We are able to select multiple variable to plot over time. But we are only interest in Gibbs. Unselect the rest and we should be able to see how $G_{system}$ evolves with time:
+
+![Paraview_26](C:\Users\CE-KPI15\Projects\pde-Solver-Course\EX4\Paraview Tutorial\Paraview_26.png)
+
+You can similarly export the data and plot it yourself as we did in the 1D plot example. 
