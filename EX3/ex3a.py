@@ -13,7 +13,7 @@ mesh = PeriodicGrid1D(nx=nx, dx=dx)
 D = 1.0
 U = 100.0
 peclet = (U*L/D)
-# This is the syntax needed to specify u_x
+# This is the syntax needed to specify U
 convCoeff= (1.0,)
 
 # intial condition width (standard deviation)

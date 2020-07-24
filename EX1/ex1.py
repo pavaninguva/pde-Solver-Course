@@ -1,7 +1,7 @@
 # Necessary imports
 from fipy import *
 from fipy.viewers.matplotlibViewer.matplotlibViewer import _ColorBar
-import sys
+
 
 
 # Setting up the mesh
@@ -12,10 +12,10 @@ nx = ny = 100
 dx = dy = 0.01
 mesh = Grid2D (dx=dx, dy=dy, nx=nx, ny=ny)
 
-phi = CellVariable(mesh=mesh, name=r"$\phi$", value= 3.2)
+phi = CellVariable(mesh=mesh, name=r"$\phi$", value= 0.0)
 
 # Applying Dirichlet boundary conditions only
-valueTop = 4.0
+valueTop = 1.0
 valueBottom = valueLeft = valueRight = 0.0
 
 # Top BC
@@ -55,7 +55,7 @@ analytical_solution = ( (4.0/(pi*numerix.sinh(pi)))*(numerix.sin(pi*x))*(numerix
 analytical = CellVariable(mesh=mesh, name=r"$\phi_{Analytical}$", value = analytical_solution )
 
 
-
+# Solving the equation
 phi.equation.solve(var=phi)
 
 from fipy import input
