@@ -4,6 +4,8 @@
 
 This is the first of four exercises to introduce how declarative PDE solvers in python can be easily used to solve PDEs of interest. To get things started, we will work through one of the examples from the problem sheets and present both the theoretical and numerical solution. 
 
+
+
 ## Learning objectives
 
 After completing this first exercise, you should be able to do the following: 
@@ -30,6 +32,8 @@ I personally advocate for using python environments and open-source solvers for 
 
 You may end up using commercially available solver packages in the future e.g. `Ansys` or `COMSOL` which are also incredibly powerful and come with a nice graphic user interface. However, the fundamentals are the same and insights gained from one solver are often useful in future practice. 
 
+
+
 ## Problem statement
 
 We use the Q3 of problem sheet B2-3 as the model problem here. This equation represents the Laplace equation in $2D$ along the domain $(x,y) \in [(0,0), (a,b)]$ :
@@ -43,11 +47,13 @@ $$
 \phi (x,b) = 1
 $$
 
+
+
 ### Analytical solution
 
 Analytically, we can solve this problem using the separation of variables:
 
-Suppose that the solution to the equation $\phi(x,y) takes on the following form: 
+Suppose that the solution to the equation $\phi(x,y)$ takes on the following form: 
 $$
 \phi(x,y) = X(x)Y(y)
 $$
@@ -107,6 +113,8 @@ $$
 \phi(x,y) = \sum_{n=0}^{\infin} \frac{4}{(2n+1) \pi  \sinh \bigg( \frac{(2n+1) \pi b}{a} \bigg)} \bigg[ \sin \bigg( \frac{(2n+1) \pi }{a}x \bigg)\sinh \bigg( \frac{(2n+1) \pi }{a}y \bigg) \bigg]
 $$
 
+
+
 ### Numerical solution
 
 We consider the numerical solution of the Laplace equation with the same boundary conditions as above on a unit square domain i.e. $a = b = 1$. The analytical solution can be written as follows: 
@@ -117,18 +125,20 @@ The analytical solution is of interest to us as it gives us an exact solution wh
 
 1. Comparison to an analytical solution (What we are doing in this exercise)
 2. Comparison to experimental data e.g. Computational Fluid Dynamics (CFD) simulations of real flows which we then go and test experimentally to confirm if we observe the same trends and flow features. 
-3. Comparison to previous literature and well studied test cases. Many journal articles that propose new techniques for simulations typically use a series of well studied benchmarking cases that have alot of data available and compare their results to these test cases. 
+3. Comparison to previous literature and well studied test cases. Many journal articles that propose new techniques for simulations typically use a series of well studied benchmarking cases that have a lot of data available and compare their results to these test cases. 
 4. Mesh resolution / convergence study. Instead of comparing the simulation results to other work, a mesh resolution study  where progressively finer meshes can be used in the simulation to evaluate if the results are independent of the mesh resolution. 
 
 Typically, a combination of these techniques will be used in an actual study. 
 
 For the purposes of this course, the more gory details regarding the discretisation schemes and the complexities of solution method are omitted. However, there is a wide variety of resources available that can shed more light if necessary. The `FiPy` website itself contains a wealth of information in a digestible manner and is a great place to start. 
 
+
+
 #### Setting up the mesh
 
 We first need to set up the mesh. When we look at the analytical solution of the PDE, we can see that we are able to fully evaluate $\phi$ at any point $(x,y)$ within the domain $(x,y) \in [(0,0), (1,1)]$.  However, when solving PDEs numerically, we do not have that luxury as we would then need to evaluate $\phi$ at infinite points.  Instead, the physical domain is represented as discrete chunks, thus representing the domain in a discrete and finite way that can be interpreted by a computer. 
 
-`FiPy` has many in-built mesh generation tools for a variety of simple shapes e.g. a line, rectange or sphere for example. We create the mesh in our code as follows: 
+`FiPy` has many in-built mesh generation tools for a variety of simple shapes e.g. a line, rectangle or sphere for example. We create the mesh in our code as follows: 
 
 ```python
 nx = ny = 100
@@ -137,6 +147,8 @@ mesh = Grid2D (dx=dx, dy=dy, nx=nx, ny=ny)
 ```
 
 This gives us a mesh of $100 \times 100$ cells with each cell having the dimensions ($\Delta x, $$\Delta y$) of $(0.01, 0.01)$. 
+
+
 
 #### Defining the variable
 
@@ -147,6 +159,8 @@ The addition of the last portion `value = 0.0` initializes the value of $\phi$ t
 ```python
 phi = CellVariable(mesh=mesh, name=r"$\phi$", value= 0.0)
 ```
+
+
 
 #### Applying the boundary conditions
 
@@ -204,7 +218,7 @@ analytical_solution = ( (4.0/(pi*numerix.sinh(pi)))*(numerix.sin(pi*x))*(numerix
 analytical = CellVariable(mesh=mesh, name=r"$\phi_{Analytical}$", value = analytical_solution )
 ```
 
-Considering that the analytical solution is an infinite series, we need to truncate the series. Ironically, this truncation makes the visualized analytical solution less accurate than the actual simulation. 
+Considering that the analytical solution is an infinite series, we need to truncate the series. Ironically, this truncation makes the visualized analytical solution less accurate than the actual simulation as you will see later on. There is an alternate way of implementing the analytical solution in `FiPy` which is shown in ex2a. 
 
 
 
@@ -234,7 +248,7 @@ if __name__ == '__main__':
 # Setting up the second viewer for the analytical solution
 if __name__ == '__main__':
     vi2 = Viewer(analytical, colorbar=None)
-    vi2.colorbar = _ColorBar(viewer=vi, vmin=0.0, vmax=1.0)
+    vi2.colorbar = _ColorBar(viewer=vi2, vmin=0.0, vmax=1.0)
     input("Press <return> to proceed")
 ```
 
@@ -242,4 +256,12 @@ if __name__ == '__main__':
 
 ### Post processing
 
-Fortunately there is not too much work that needs to be done for this exercise. The data is already nicely scaled and represented using the default viewer settings. The task then is to export the data from the viewer which 
+Fortunately there is not too much work that needs to be done for this exercise. The data is already nicely scaled and represented using the default viewer settings. The task then is to export the data from the viewer which can be done trivially by clicking the save icon when the viewer comes up during the simulation. We get the following results: 
+
+Numerical solution:
+
+![ex1numerical](C:\Users\CE-KPI15\Projects\pde-Solver-Course\Figures\ex1numerical.png)
+
+Analytical solution:
+
+![ex1analytical](C:\Users\CE-KPI15\Projects\pde-Solver-Course\Figures\ex1analytical.png)

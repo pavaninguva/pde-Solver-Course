@@ -1,6 +1,6 @@
 # Exercise 2 
 
-In the first exercise, we solved a simple "steady-state" problem (i.e. there was no time derivative) in the problem. We will know look at one of the simplest transient problems that you should be familiar with from `Heat and Mass Transfer 1`. 
+In the first exercise, we solved a simple "steady-state" problem (i.e. there was no time derivative) in the problem. We will now look at one of the simplest transient problems that you should be familiar with from `Heat and Mass Transfer 1`. 
 
 This exercise is broken into three parts as we want to explore different aspects of the same equation system. In the first part, we focus more on how transient problems are tackled and we consider the case where Dirichlet boundary conditions are applied. In the second part, we consider the solution of the diffusion equation with Neumann boundary conditions and in the third part, we consider how a reaction in the system can be modelled. 
 
@@ -106,7 +106,7 @@ $$
 
 ### Analytical solution
 
-Lets work through the problem. We quite quickly encounter the fact that due to the non-homogenous boundary conditions, a naïve application of separation of variables will not work. The boundary conditions require modification. 
+Let's work through the problem. We quite quickly encounter the fact that due to the non-homogenous boundary conditions, a naïve application of separation of variables will not work. The boundary conditions require modification. 
 
 Fortunately, the physical nature of the problems lends to the solution. By fixing the concentrations at the ends of the slab and not considering a flux condition, the system will eventually tend to a steady state solution. So we can employ this idea to perform a variable transformation that enables us to reformulate the boundary conditions as homogenous BCs. 
 
@@ -135,7 +135,7 @@ $$
 \frac{\partial ^{2} \phi}{\partial x^{2}} = \frac{\partial^{2}c}{\partial x^{2}}
 $$
 
-This is a nice result! The equation does not change shape in anyway with the variable transform!! Lets consider how the BCs evolve: 
+This is a nice result! The equation does not change shape in anyway with the variable transform!! Let's consider how the BCs evolve: 
 $$
 \phi(0, t) = c(0,t) - c_{S.S.}(0) = 1 -1 = 0
 $$
@@ -189,7 +189,7 @@ $$
 $$
 
 
-Now that we have a time-step, the next question we need to figure out is how long to run the simulation for! Now that may seem like a straightforward question in that this should normally be pre-defined. But in this case, we dont immediately have a fixed value for the time taken for the system to reach steady state. So lets employ a bit of street-fighting for this:
+Now that we have a time-step, the next question we need to figure out is how long to run the simulation for! Now that may seem like a straightforward question in that this should normally be pre-defined. But in this case, we don't immediately have a fixed value for the time taken for the system to reach steady state. So let's employ a bit of street-fighting for this:
 
 - Our simulation domain is $1m$ long
 - We set our diffusion coefficient to be $1 m^{2} / s$ 
@@ -223,9 +223,21 @@ if __name__ == '__main__':
 
 ### Results
 
+When using the explicit time-stepping method with a timestep ~ $1.11 \times 0.00018$, you can see "wiggles" in the solution which is a numerical artifact. If you further increase the timestep, the solution will oscillate wildly. 
 
+![ex2aexplicit](C:\Users\CE-KPI15\Projects\pde-Solver-Course\Figures\ex2aexplicit.png)
 
+When we shift over to an implicit method, we end up with a much more stable solution even when the timestep is an order of magnitude larger:
 
+![ex2aimplict](C:\Users\CE-KPI15\Projects\pde-Solver-Course\Figures\ex2aimplict.png)
+
+Another dynamic worth exploring is the behavior of the truncated analytical solution. We use the timestep for the explicit method and use a time-stride of 1 to see how things appear in the first few timesteps of the simulation. In the first few timesteps, we see high frequency oscillations in the analytical solution: 
+
+![ex2a_analytical](C:\Users\CE-KPI15\Projects\pde-Solver-Course\Figures\ex2a_analytical.png)
+
+However, these high frequency modes decay quickly and the truncated analytical solution behaves as expected: 
+
+![ex2a_analytical2](C:\Users\CE-KPI15\Projects\pde-Solver-Course\Figures\ex2a_analytical2.png)
 
 ## Part 2
 
@@ -275,7 +287,7 @@ c.faceGrad.constrain(0.0, where=mesh.facesRight)
 
 ### Output
 
-So far, we have been using the default `Viewer` from `FiPy` which is based on `matplotlib`. This makes it adequate for quickly visualizing the simulation and taking occasional snapshots. But this is not very useful since we dont have access to the actual data. This is where we implement the `TSVViewer` which enables us to output the simulation data as a `.tsv` file which we then convert into a more usable format `.csv`: 
+So far, we have been using the default `Viewer` from `FiPy` which is based on `matplotlib`. This makes it adequate for quickly visualizing the simulation and taking occasional snapshots. But this is not very useful since we don't have access to the actual data. This is where we implement the `TSVViewer` which enables us to output the simulation data as a `.tsv` file which we then convert into a more usable format `.csv`: 
 
 ```python
 if __name__ == "__main__":
@@ -319,10 +331,6 @@ for tsv in tsv_list:
 
 Once we have the `.csv` files, it is easy to then use the data to generate custom plates based on your needs. 
 
-### Results
-
-
-
 ## Part 3
 
 The last part of this exercise introduces an additional complexity to the diffusion equation. We consider how a reaction might affect the transient profile of the concentration. We use the case outlined in part 2. The default viewer is used and you should be able to swap things out if you want to export the simulation data as a `.csv ` file in the future. 
@@ -364,3 +372,6 @@ eq = TransientTerm() == DiffusionTerm(coeff=  D)  + ImplicitSourceTerm(coeff=k)
 
 ### Results
 
+We combine the results from parts 2 and 3 cause they are quite similar. If you plot the results from multiple timesteps together, you would get something like this: 
+
+![ex2c](C:\Users\CE-KPI15\Projects\pde-Solver-Course\Figures\ex2c.png)

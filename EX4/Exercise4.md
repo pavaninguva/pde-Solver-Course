@@ -2,12 +2,16 @@
 
 We have reached a point where we have explored a variety of mathematical problems and features within `FiPy`. At this stage, it is possible to understand and implement a model that is still an area of active research from both an theoretical and application stand point. Whilst implementing and running the model is relatively straightforward, making progress on the problems which I will highlight is much more complicated. 
 
+
+
 ## Learning objectives
 
 1. Understand how the Cahn-Hilliard equation is derived
 2. Implement the model in `FiPy`
 3. Understand the numerical issues associated with this equation system
 4. (Not too important) Output files as `*.vtk` for visualization in Paraview
+
+
 
 ## Problem statement and derivation
 
@@ -17,7 +21,7 @@ $$
 \\
 \mathbf{j} = -D \frac{da}{dx} \ (\mathrm{in \ one \ dimension})
 $$
-where $\mathbf{j}$ is the flux, $D$ is the diffusion coefficient and $a$ is the mole fraction of species A. We can then apply the continuity / mass conversation equation: 
+where $\mathbf{j}$ is the flux, $D$ is the diffusion coefficient and $a$ is the volume fraction of species A. We can then apply the continuity / mass conservation equation: 
 $$
 \frac{\partial a}{\partial t} + \nabla \cdot\mathbf{j} = 0
 $$
@@ -31,9 +35,9 @@ The flux expression for species $i$ , $\mathbf{j}_{i}$ is written as follows:
 $$
 \mathbf{j}_{i} = -\sum_{j} L_{ij}\nabla \mu_{j}
 $$
-Where $L_{ij}$ is the mobility coefficient and $\mu_{i}$ is the chemical potential of species $i$. For species $1$ in a binary mixture: 
+Where $L_{ij}$ is the mobility coefficient and $\mu_{i}$ is the chemical potential of species $i$. For species $A$ in a binary mixture: 
 $$
-\mathbf{j}_{1} = -(L_{11}\nabla \mu_{1} + L_{12}\nabla \mu_{2})
+\mathbf{j}_{A} = -(L_{AB}\nabla \mu_{A} + L_{AB}\nabla \mu_{B})
 $$
 The following constraints apply: 
 $$
@@ -43,112 +47,114 @@ L_{ij} = L_{ji} \\
 $$
 We can therefore write: 
 $$
-L_{11} + L_{12} = 0 
-\\ L_{11} = - L_{12}
+L_{AA} + L_{AB} = 0 
+\\ L_{AA} = - L_{AB}
 $$
-When substituting this result back into $\mathbf{j}_{1}$: 
+When substituting this result back into $\mathbf{j}_{A}$: 
 $$
-\mathbf{j}_{1} = L_{12}(\nabla \mu_{1} - \nabla \mu_{2})
+\mathbf{j}_{A} = L_{AB}(\nabla \mu_{A} - \nabla \mu_{B})
 $$
 Since the gradient operator is linear, we can further compactify the above expression: 
 $$
-\mathbf{j}_{i} = L_{12}\nabla\mu_{12}
+\mathbf{j}_{i} = L_{AB}\nabla\mu_{AB}
 $$
-where $\mu_{12}  = \mu_{1} - \mu_{2}$. Working in differences for chemical potentials i.e. $\mu_{ij} = \mu_{i} - \mu_{j}$ is convenient for subsequent analysis. The mobility coefficient needs to be a function of composition, but the diffusion coefficient can be a constant: 
+where $\mu_{AB}  = \mu_{A} - \mu_{B}$. Working in differences for chemical potentials i.e. $\mu_{ij} = \mu_{i} - \mu_{j}$ is convenient for subsequent analysis. The mobility coefficient needs to be a function of composition, but the diffusion coefficient can be a constant: 
 $$
-L_{12} = D_{12} x_{1} (1-x_{1}) 
+L_{AB} = D_{AB} a (1-a)
 $$
-where $D_{12}$ is the diffusion coefficient, $x_{1}$ is the mole fraction of species $i$.  
+where $D_{AB}$ is the diffusion coefficient.
 
 We can then apply the same continuity equation as we did for the vanilla diffusion equation which gives us the following equation: 
 $$
-\frac{\partial x_{1}}{\partial t} = \nabla \cdot (D_{12}x_{1}(1-x_{1}) \nabla \mu_{12})
+\frac{\partial a}{\partial t} = \nabla \cdot (D_{AB}a(1-a) \nabla \mu_{AB})
 $$
 We now need to figure out an expression for the chemical potential To figure that out, we need to consider the total Gibbs energy of the system. We consider the Landau-Ginzburg free energy functional: 
 $$
- G_{\text{system}}= \int_{V} g(x_{1},x_{2}...x_{N}) + \sum_{i}^{N-1}\frac{\kappa_{i}}{2}(\nabla x_{i})^2 +
-	   \sum_{j>i}\sum_{i}^{N-1}\kappa_{ij}(\nabla x_{i})(\nabla x_{j}) \ dV
+G_{\text{system}}= \int_{V} g(\phi_{1},\phi_{2}, \dots \phi_{N}) + \sum_{i}^{N-1}\frac{\kappa_{i}}{2}(\nabla \phi_{i})^2 +
+	   \sum_{j>i}\sum_{i}^{N-1}\kappa_{ij}(\nabla \phi_{i})(\nabla \phi_{j}) \ dV
 $$
-For two components: 
+Where $\phi_{i}$ is the volume fraction of species $i$. For two components: 
 $$
-G_{\text{system}}= \int_{V} g(x_{1}) + \frac{\kappa}{2}(\nabla x_{1})^2 \ dV
+G_{\text{system}}= \int_{V} g(a) + \frac{\kappa}{2}(\nabla a)^2 \ dV
 $$
-where $G_{system}$ is the total Gibbs energy of the system, $g(x_{1})$ is the homogenous free energy of mixing and $\kappa$ is the gradient energy parameter. When a mixture demixes, this is a spontaneous which means that the total Gibbs energy of the system decreases.  There are two forces that are considered: 
+where $G_{system}$ is the total Gibbs energy of the system, $g(x_{1})$ is the homogenous free energy of mixing and $\kappa$ is the gradient energy parameter. When a mixture demixes, this is a spontaneous process which means that the total Gibbs energy of the system decreases.  There are two forces that are considered: 
 
-1. The system can reduces $G_{system}$ by firstly demixing which results in species that have unfavorable interactions concentrating in different phases 
-2. However, demixing results in the formation of an interface betweeen the two phases. The interface itself has an energy associated with it and it is unfavourable. Hence the $\kappa$ term penalizes demixing. 
+1. The system can reduce $G_{system}$ by firstly demixing which results in species that have unfavorable interactions concentrating in different phases 
+2. However, demixing results in the formation of an interface between the two phases. The interface itself has an energy associated with it and it is unfavourable. Hence the $\kappa$ term penalizes demixing. 
 
 By definition, we know that the chemical potential $\mu_{i}$ for a conventional system can be written as follows: 
 $$
-\mu_{i} = \bigg( \frac{\partial G}{\partial x_{i}} \bigg)_{T, P}
+\mu_{i} = \bigg( \frac{\partial G}{\partial \phi_{i}} \bigg)_{T, P}
 $$
 However, this definition is inadequate for inhomogeneous systems. We can apply the variational derivative to obtain a generalized expression for the chemical potential:
 $$
-\mu_{i} = \frac{\delta G_{system}}{\delta x_{i}} = \frac{\partial G}{\partial x_{i}} - \nabla \cdot \frac{\partial G}{\partial \nabla x_{i}}
+\mu_{i} = \frac{\delta G_{system}}{\delta \phi_{i}} = \frac{\partial G}{\partial \phi_{i}} - \nabla \cdot \frac{\partial G}{\partial \nabla \phi_{i}}
 $$
 Therefore, $\mu_{i}$ can be written as follows:
 $$
-\mu_{1} = \frac{\partial g}{\partial x_{1}} - \nabla \cdot (\kappa \nabla x_{1})
+\mu_{A} = \frac{\partial g}{\partial a} - \nabla \cdot (\kappa \nabla a)
 $$
 We assume that $\kappa$ is not dependent on composition, so: 
 $$
-\mu_{1} = \frac{\partial g}{\partial x_{1}} - \kappa \nabla^{2} x_{1}
+\mu_{A} = \frac{\partial g}{\partial a} - \kappa \nabla^{2} a
 $$
 and: 
 $$
-\mu_{2} = 0
+\mu_{B} = 0
 $$
 
 $$
-\therefore \mu_{12} = \frac{\partial g}{\partial x_{1}} - \kappa \nabla^{2}x_{1}
+\therefore \mu_{AB} = \frac{\partial g}{\partial a} - \kappa \nabla^{2} a
 $$
 
 We can observe that the system forms a 4th order PDE. However, solving a 4th order PDE imposes severe time-stepping requirements (referencing exercise 2). Hence, the Cahn-Hilliard equation is typically treated as a set of coupled 2nd order PDEs: 
 $$
-\frac{\partial x_{1}}{\partial t} = \nabla \cdot (D_{12}x_{1}(1-x_{1}) \nabla \mu_{12}) \\
-\mu_{12} = \frac{\partial g}{\partial x_{1}} - \kappa \nabla^{2}x_{1}
+\frac{\partial a}{\partial t} = \nabla \cdot (D_{AB}a(1-a) \nabla \mu_{AB}) \\
+\mu_{AB} = \frac{\partial g}{\partial a} - \kappa \nabla^{2} a
 $$
-We now need an expression for $g(x_{1})$. For polymer blends and polymer-solvent systems, we can use the Flory-Huggins equation: 
+We now need an expression for $g(a)$. For polymer blends and polymer-solvent systems, we can use the Flory-Huggins equation: 
 $$
-g(x_{1}) = \frac{x_{1}}{N_{1}}\ln{x_{1}} + \frac{(1-x_{1})}{N_{2}}\ln{(1-x_{1})} + \chi_{12}x_{1}(1-x_{1})
+g(a) = \frac{a}{N_{A}}\ln{a} + \frac{(1-a)}{N_{B}}\ln{(1-a)} + \chi_{AB}a(1-a)
 $$
-where $N_{1}, N_{2}$ is the number of segments of the polymer chain of species $1$ and $2$ respectively and $\chi_{12}$ is the interaction parameter between species $1$ and $2$. From literature, the following expression can be used for $\kappa$: 
+where $N_{A}, N_{B}$ is the number of segments of the polymer chain of species $A$ and $B$ respectively and $\chi_{AB}$ is the interaction parameter between species $A$ and $B$. From literature, the following expression can be used for $\kappa$: 
 $$
-\kappa = \frac{2}{3} R_{G}^{2} \chi_{12}
+\kappa = \frac{2}{3} R_{G}^{2} \chi_{AB}
 $$
 
 
-Where $R_{G}$ is the radius of gyration of the polymer. To wrap things up, we scale our equations by introducing the following scaling relationships: 
+Where $R_{G}$ is the radius of gyration of the polymer which we assume to be identical for both species. To wrap things up, we scale our equations by introducing the following scaling relationships: 
 $$
-\tilde{t} = \frac{D_{12} t}{R_{G}^{2}} \\
+\tilde{t} = \frac{D_{AB} t}{R_{G}^{2}} \\
 \mathbf{x} = \tilde{\mathbf{x}} R_{G}
 $$
 We thus obtain the final equation system of interest for us: 
 $$
-\tilde{\mu}_{12} = \frac{\partial g}{\partial x_{1}} - \tilde{\kappa} \tilde{\nabla}^{2}x_{1} \\
-\frac{\partial x_{1}}{\partial \tilde{t}} = \tilde{\nabla}\cdot (x_{1}(1-x_{1})\tilde{\nabla}\tilde{\mu}_{12})
+\tilde{\mu}_{AB} = \frac{\partial g}{\partial a} - \tilde{\kappa} \tilde{\nabla}^{2}a \\
+\frac{\partial a}{\partial \tilde{t}} = \tilde{\nabla}\cdot (a(1-a)\tilde{\nabla}\tilde{\mu}_{AB})
 $$
+
+
 
 ### Ideal limit
 
-For sanity's sake, this part outlines how the modified Cahn-Hilliard equation reduces to the vanilla diffusion equation when the system is ideal. When the system is ideal, $\kappa =0$ since there are no enthalpic / residual interactions / contributions.  
+For sanity's sake, this part outlines how the modified Cahn-Hilliard equation reduces to the vanilla diffusion equation when the system is ideal. When the system is ideal, $\kappa =0$ since there are no enthalpic / residual interactions / contributions.  In an ideal system where the individual particles have the same volume, the mole fraction and volume fraction become identical. For clarity, we can replace $\phi_{i} / a$ with $x_{i}$ so that it is more recognisable to you. 
 
 For an ideal system, we know that: 
 $$
-g(x_{1}) = x_{1}\ln{x_{1}} + (1-x_{1}) \ln{(1-x_{1})} 
+g(x_{A}) = x_{A}\ln{x_{A}} + (1-x_{A}) \ln{(1-x_{A})}
 $$
 Therefore: 
 $$
-\mu_{12} =  \ln{x_{1}} - \ln{(1-x_{1})} = \ln{\frac{x_{1}}{1-x_{1}}}
+\mu_{AB} =  \ln{x_{A}} - \ln{(1-x_{A})} = \ln{\frac{x_{A}}{1-x_{A}}}
 $$
 
 $$
-\nabla \mu_{12} = \frac{\partial \mu_{12}}{\partial x_{1}} \nabla x_{1} = \frac{1}{x_{1}(1-x_{1})} \nabla x_{1}
+\nabla \mu_{AB} = \frac{\partial \mu_{AB}}{\partial x_{A}} \nabla x_{A} = \frac{1}{x_{A}(1-x_{A})} \nabla x_{A}
 $$
 
 Considering the first equation: 
 $$
-\frac{\partial x_{1}}{\partial t} = \nabla \cdot (D_{12}x_{1}(1-x_{1}) \nabla \mu_{12}) =  \nabla \cdot \bigg(D_{12}x_{1}(1-x_{1})  \frac{1}{x_{1}(1-x_{1})} \nabla x_{1} \bigg) = D_{12}\nabla^{2}x_{1}
+\frac{\partial x_{A}}{\partial t} = \nabla \cdot (D_{AB}x_{A}(1-x_{A}) \nabla \mu_{AB}) =  \nabla \cdot \bigg(D_{AB}x_{A}(1-x_{A})  \frac{1}{x_{A}(1-x_{A})} \nabla x_{A} \bigg) = D_{AB}\nabla^{2}x_{A}
 $$
 We recover our original equation for simple diffusion. 
 
@@ -253,3 +259,12 @@ We now introduce the code needed to output `*.VTK` files that can be processed i
 
 ## Results and area for study
 
+If you follow the post-processing steps in ParaView, you will be able to obtain the following figures / plots: 
+
+![ex4](C:\Users\CE-KPI15\Projects\pde-Solver-Course\Figures\ex4.png)
+
+And $G_{System}$ looks like this: 
+
+![ex4_gibbs](C:\Users\CE-KPI15\Projects\pde-Solver-Course\Figures\ex4_gibbs.png)
+
+If you want to further explore the system, you could consider changing the values of the parameters such as $N_{A}$, $N_{B}$ or $\chi_{AB}$. You will notice that for higher values of $\chi_{AB}$, the solution diverges. This divergence is quite a difficult issue that has yet to be resolved. 
