@@ -1,6 +1,6 @@
 # Exercise 4
 
-We have reached a point where we have explored a variety of mathematical problems and features within `FiPy`. At this stage, it is possible to understand and implement a model that is still an area of active research from both an theoretical and application stand point. Whilst implementing and running the model is relatively straightforward, making progress on the problems which I will highlight is much more complicated. 
+We have reached a point where we have explored a variety of mathematical problems and features within `FiPy`. At this stage, it is possible to understand and implement a model that is still an area of active research from both a theoretical and application stand point. Whilst implementing and running the model is relatively straightforward, making progress on the problems which I will highlight is much more complicated. 
 
 
 
@@ -15,7 +15,7 @@ We have reached a point where we have explored a variety of mathematical problem
 
 ## Problem statement and derivation
 
-The Cahn-Hilliard equation can model the demixing and precipitation of components from a mixture. If you recall Thermodynamics II, we can study the Gibbs energy of mixing $\Delta G _{mix}$ which gives us insight on whether the system will exhibit liquid-liquid equilibria (LLE).  We first start by considering the conventional diffusive flux expression that you should be familiar with for a species $A$: 
+The are a variety of interesting PDEs that may be of interest to chemical engineers such as the Navier-Stokes equation, the Gray-Scott models, and the Schrödinger equation. However, one of particular interest that we will focus on in this exercise is the Cahn-Hilliard equation. The Cahn-Hilliard equation can model the demixing and precipitation of components from a mixture. If you recall Thermodynamics II, we can study the Gibbs energy of mixing $\Delta G _{mix}$ which gives us insight on whether the system will exhibit liquid-liquid equilibria (LLE).  We first start by considering the conventional diffusive flux expression that you should be familiar with for a species $A$: 
 $$
 \mathbf{j} = -D \nabla a
 \\
@@ -77,9 +77,9 @@ Where $\phi_{i}$ is the volume fraction of species $i$. For two components:
 $$
 G_{\text{system}}= \int_{V} g(a) + \frac{\kappa}{2}(\nabla a)^2 \ dV
 $$
-where $G_{system}$ is the total Gibbs energy of the system, $g(x_{1})$ is the homogenous free energy of mixing and $\kappa$ is the gradient energy parameter. When a mixture demixes, this is a spontaneous process which means that the total Gibbs energy of the system decreases.  There are two forces that are considered: 
+where $G_{\text{system}}$ is the total Gibbs energy of the system, $g(x_{1})$ is the homogenous free energy of mixing and $\kappa$ is the gradient energy parameter. When a mixture demixes, this is a spontaneous process which means that the total Gibbs energy of the system decreases.  There are two forces that are considered: 
 
-1. The system can reduce $G_{system}$ by firstly demixing which results in species that have unfavorable interactions concentrating in different phases 
+1. The system can reduce $G_{\text{system}}$ by firstly demixing which results in species that have unfavorable interactions concentrating in different phases 
 2. However, demixing results in the formation of an interface between the two phases. The interface itself has an energy associated with it and it is unfavourable. Hence the $\kappa$ term penalizes demixing. 
 
 By definition, we know that the chemical potential $\mu_{i}$ for a conventional system can be written as follows: 

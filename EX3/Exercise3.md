@@ -73,22 +73,22 @@ $$
 
 #### Theoretical discussion
 
-Let us explore things from a more theoretical level. We introduce two specific dimensionless groups: the Courant $\mathrm{Co}$ and grid Peclet $\mathrm{Pe}_{Cell}$ numbers: 
+Let us explore things from a more theoretical level. We introduce two specific dimensionless groups: the Courant $\mathrm{Co}$ and grid Peclet $\mathrm{Pe}_{\mathrm{Cell}}$ numbers: 
 $$
 \mathrm{Co} = \frac{U \Delta t}{\Delta x}
 $$
 
 $$
-\mathrm{Pe}_{Cell} = \frac{U \Delta x}{D}
+\mathrm{Pe}_{\mathrm{Cell}} = \frac{U \Delta x}{D}
 $$
 
-Suppose we keep $D = 1.0$ as per the previous diffusion problems and we specify $\mathrm{Pe} = 100$, in terms of dimensionless variables ($L = 1.0$). From a stability perspective, it has been presented in the literature that $\mathrm{Pe}_{Cell} < 2.0$ is necessary. We shall keep $\mathrm{Pe}_{Cell} = 1.0$ which corresponds to $\Delta x = 0.01$. 
+Suppose we keep $D = 1.0$ as per the previous diffusion problems and we specify $\mathrm{Pe}_\mathrm{Cell} = 100$, in terms of dimensionless variables ($L = 1.0$). From a stability perspective, it has been presented in the literature that $\mathrm{Pe}_{\mathrm{Cell}} < 2.0$ is necessary. We shall keep $\mathrm{Pe}_{\mathrm{Cell}} = 1.0$ which corresponds to $\Delta x = 0.01$. 
 
 To make sense of the Courant number, let us perform a similar discretisation as we did for the diffusion problem to derive the Fourier number. We consider the pure convective equation: 
 $$
 \frac{\partial c}{\partial t} + U\frac{\partial c}{\partial x} = 0
 $$
-Before progressing, let us revisit some basic concepts: 
+Before progressing, let us revisit some basic concepts.
 
 A derivative is written as follows: 
 $$
@@ -100,7 +100,7 @@ c(x_{0} + \Delta x) = c(x_{0}) + \Delta x \frac{\partial c}{\partial x}\bigg|_{x
 $$
 We can now evaluate the approximation order of the derivative: 
 $$
-\bigg( \frac{\partial c}{\partial x}\bigg|_{x_{{0}}} \bigg)_{DISCRETE} - \bigg( \frac{\partial c}{\partial x} \bigg|_{x_{0}} \bigg)_{EXACT} = \frac{\Delta x^{}}{2} \frac{\partial^{2} c}{\partial x^{2}}\bigg|_{x_{0}} + \frac{\Delta x^{2}}{6} \frac{\partial^{3} c}{\partial x^{3}}\bigg|_{x_{0}} + \dots
+\bigg( \frac{\partial c}{\partial x}\bigg|_{x_{{0}}} \bigg)_{\mathrm{DISCRETE}} - \bigg( \frac{\partial c}{\partial x} \bigg|_{x_{0}} \bigg)_{\mathrm{EXACT}} = \frac{\Delta x^{}}{2} \frac{\partial^{2} c}{\partial x^{2}}\bigg|_{x_{0}} + \frac{\Delta x^{2}}{6} \frac{\partial^{3} c}{\partial x^{3}}\bigg|_{x_{0}} + \dots
 $$
 
 $$
@@ -111,7 +111,7 @@ Note that the approximate form of the derivative looks like the simple discretis
 
 Going back to our original problem, we apply an explicit forward Euler discretization scheme and a simple first order upwind scheme for the convective term:
 $$
-\frac{c^{new}_{i} - c^{old}_{i}}{\Delta t} + U \frac{c^{old}_{i} - c_{i-1}^{old}}{\Delta x} = 0
+\frac{c^{\mathrm{new}}_{i} - c^{\mathrm{old}}_{i}}{\Delta t} + U \frac{c^{\mathrm{old}}_{i} - c_{i-1}^{\mathrm{old}}}{\Delta x} = 0
 $$
 This can be written as follows: 
 $$
@@ -125,7 +125,7 @@ $$
  \frac{\Delta t^{2}}{6} \frac{\partial^{3} c}{\partial t^{3}}\bigg|_{(x_{0}, t_{0})} - \frac{U \Delta x^{2}}{6} \frac{\partial^{3} c}{\partial x^{3}}\bigg|_{(x_{0}, t_{0})} + \dots \\
  = \mathcal{O}(\Delta x) + \mathcal{O}(\Delta t)
 $$
-Another way of seeing the same problem is by considering the close relationship between the wave equation and the convection equation if Clairaut's theorem holds: 
+Another way of seeing the same problem is by considering the close relationship between the wave equation and the convection equation if Clairaut's theorem holds.
 
 First considering the convection equation:
 $$
@@ -272,7 +272,7 @@ eq_c = (TransientTerm(var=c)) + VanLeerConvectionTerm(coeff=convCoeff, var=c) - 
 
 ```
 
-Note the change in sign for the coefficient of the source term. As we have the non-linear term, we need to perform sweeps at each timestep. The at each timestep, the solver solves a linear system of equations which is perfectly fine for nice and linear PDEs. However, if we update the problem at each timestep with the results from the previous solution (sweep), we can solve the non-linear PDE. The process of enabling sweeping in `FiPy` requires the following steps: 
+Note the change in sign for the coefficient of the source term. As we have the non-linear term, we need to perform sweeps at each timestep. At each timestep, the solver solves a linear system of equations which is perfectly fine for nice and linear PDEs. However, if we update the problem at each timestep with the results from the previous solution (sweep), we can solve the non-linear PDE. The process of enabling sweeping in `FiPy` requires the following steps: 
 
 1. Updating the `CellVariable` declaration: 
 
@@ -309,7 +309,7 @@ if __name__ == '__main__':
 
 ### Results
 
-This code takes a bit longer to run on a single processor. But parallelization is also beyond the scope of this course. Feel free to run the simulation with a larger time-step. I have attached some snapshots for your reference: 
+This code takes a bit longer to run on a single processor. But parallelization (which enables to split the operations between multiple processors) is also beyond the scope of this course. Feel free to run the simulation with a larger time-step. I have attached some snapshots for your reference: 
 
 ![ex3b_transient_1](C:\Users\CE-KPI15\Projects\pde-Solver-Course\Figures\ex3b_transient_1.png)
 

@@ -1,6 +1,6 @@
 # Exercise 2 
 
-In the first exercise, we solved a simple "steady-state" problem (i.e. there was no time derivative) in the problem. We will now look at one of the simplest transient problems that you should be familiar with from `Heat and Mass Transfer 1`. 
+In the first exercise, we solved a simple "steady-state" problem (i.e. there was no time derivative) in the problem. We will now look at one of the simplest transient problems that you should be familiar with from `Heat and Mass Transfer I`. 
 
 This exercise is broken into three parts as we want to explore different aspects of the same equation system. In the first part, we focus more on how transient problems are tackled and we consider the case where Dirichlet boundary conditions are applied. In the second part, we consider the solution of the diffusion equation with Neumann boundary conditions and in the third part, we consider how a reaction in the system can be modelled. 
 
@@ -31,7 +31,25 @@ For this exercise, we will consider two simple ways of handling the time derivat
 1. Fully explicit forward Euler time-stepping 
 2. Fully implicit backward Euler time-stepping
 
-This part may get a bit technical, so I will attempt to flesh out every step and keep it as simple as possible. We are able to write an approximation for the full equation as follows for $x$ at a point $i$ as follows:
+The former may be familiar to those who took A-Level Maths or IB HL Maths as, in the simple case where one has the following problem:
+$$
+\frac{dc}{dt}=f(t)
+$$
+One can solve for the trajectory of $c(t)$ from an initial value as:
+$$
+\frac{c^\mathrm{new}-c^\mathrm{old}}{\Delta t}=f(t^\mathrm{old})\rightarrow c^\mathrm{new}=c^\mathrm{old}+\Delta t f(t^\mathrm{old})
+$$
+ If one considers $c$ as discretised in space, then one can use the above relationship for any $c$ in a discrete element $i$:
+$$
+c^\mathrm{new}_i=c^\mathrm{old}_i+\Delta t f(t^\mathrm{old},x_i)
+$$
+The fully implicit Euler time-stepping  method uses the same idea, only the function $f$ is now evaluated at the next time step:
+$$
+c^\mathrm{new}_i=c^\mathrm{old}_i+\Delta t f(t^\mathrm{new},x_i)
+$$
+In terms of accuracy, both methods are practically identical, however, the latter has greater stability (will be examined in a later section).
+
+When the function $f$ involves derivatives of $x$, as we have discretised the $x$ space we can use a finite difference approximation of these derivatives. In the case of our  $1\mathrm{D}$ transient diffusion problem, we can write the approximation for the full equation for $c$ at a point $i$ as follows:
 $$
 \frac{c_{i}^{new} - c_{i}^{old}}{\Delta t} = \alpha D \frac{c^{new}_{i+1}- 2c^{new}_{i} + c^{new}_{i-1}}{\Delta x^{2}} + (1-\alpha) D \frac{c^{old}_{i+1}- 2c^{old}_{i} + c^{old}_{i-1}}{\Delta x^{2}}
 $$
@@ -49,15 +67,15 @@ When $\alpha = 0$:
 $$
 \frac{c_{i}^{new} - c_{i}^{old}}{\Delta t} =  D \frac{c^{old}_{i+1}- 2c^{old}_{i} + c^{old}_{i-1}}{\Delta x^{2}}
 $$
-When a fully explicit scheme such as the forward Euler is used, the new value (moving forward in time) can be evaluated explicitly from values from the old values from the previous timestep which makes it much more easy to implement than implicit methods. However, the trade off is that often, explicit time stepping requires excessively small timesteps for numerical stability while the implicit backwards Euler time-stepping is far more stable. 
+When a fully explicit scheme such as the forward Euler is used, the new value (moving forward in time) can be evaluated explicitly from values from the old values from the previous timestep which makes it much easier to implement than implicit methods. However, the trade off is that often, explicit time stepping requires excessively small timesteps for numerical stability while the implicit backwards Euler time-stepping is far more stable. The third method mentioned above, Crank-Nicolson, will have the same issues as implicit backwards Euler time-stepping, but will still have the same level of stability with the additional benefit of being more accurate.
 
 #### Stability for forward Euler time stepping
 
-For diffusion problems (We can treat heat and mass transfer as diffusion problems collectively), we can consider the following metric: 
+For diffusion problems (We can treat heat and mass transfer as diffusion problems collectively), we can consider the following metric.
 
-We can write down the dimensionless mesh Fourier number $Fo_{Mesh}$: 
+We can write down the dimensionless mesh Fourier number $\mathrm{Fo}_{\mathrm{Mesh}}$: 
 $$
-Fo_{Mesh} = D \frac{\Delta t}{\Delta x ^{2}}
+\mathrm{Fo}_{\mathrm{Mesh}} = D \frac{\Delta t}{\Delta x ^{2}}
 $$
 For fullness, a not entirely rigorous derivation of the stability criteria for the explicit Forward Euler method is presented. Feel free to gloss over this section. 
 
@@ -71,17 +89,17 @@ c_{i}^{new} = c_{i}^{old} + D\frac{\Delta t}{\Delta x^{2}} \bigg( c^{old}_{i+1}-
 $$
 Introducing $Fo_{Mesh}$:
 $$
-c_{i}^{new} = c_{i}^{old} + Fo_{Mesh} \bigg( c^{old}_{i+1}- 2c^{old}_{i} + c^{old}_{i-1} \bigg)
+c_{i}^{new} = c_{i}^{old} + \mathrm{Fo}_{\mathrm{Mesh}} \bigg( c^{old}_{i+1}- 2c^{old}_{i} + c^{old}_{i-1} \bigg)
 $$
 We can further rejig this to group all the $c_{i}^{old}$ terms together:
 $$
-c_{i}^{new} = (1- 2 Fo_{Mesh}) c_{i}^{old} + 2Fo_{Mesh} \bigg( \frac{c^{old}_{i+1} + c^{old}_{i-1} } {2} \bigg)
+c_{i}^{new} = (1- 2 \mathrm{Fo}_{\mathrm{Mesh}}) c_{i}^{old} + 2\mathrm{Fo}_{\mathrm{Mesh}} \bigg( \frac{c^{old}_{i+1} + c^{old}_{i-1} } {2} \bigg)
 $$
-The insight to be gained from rejigging the equation to the above form is that $x_{i}^{new}$ is the weighted average of the old value $x$ at that point $i$ and the average of the neighboring points' $i+1$  and $i-1$ old value of $c$. If $Fo_{Mesh} = 0$, then its easy to see that we are not advancing forward in time. When $Fo_{Mesh} = 0.5$: 
+The insight to be gained from rejigging the equation to the above form is that $x_{i}^{new}$ is the weighted average of the old value $x$ at that point $i$ and the average of the neighboring points' $i+1$  and $i-1$ old value of $c$. If $Fo_{Mesh} = 0$, then its easy to see that we are not advancing forward in time. When $\mathrm{Fo}_{\mathrm{Mesh}} = 0.5$: 
 $$
 c_{i}^{new} = \frac{1}{2} (c^{old}_{i+1} + c^{old}_{i-1})
 $$
-We see that the new value is the average of the old value of the two adjacent points. When we have $Fo_{Mesh} > 0.5$, we run into the problem where updated value unphysically overshoots the average of the neighboring values. So this gives us the following stability criteria which we can use: 
+We see that the new value is the average of the old value of the two adjacent points. When we have $\mathrm{Fo}_{\mathrm{Mesh}} > 0.5$, we run into the problem where updated value unphysically overshoots the average of the neighboring values. So this gives us the following stability criteria which we can use: 
 $$
 \Delta t \leq \frac{\Delta x ^{2}}{2D}
 $$
@@ -116,11 +134,11 @@ $$
 $$
 The solution of this is given by: 
 $$
-c_{S.S.} (x) = c_{1}x + c_{2}
+c_{\mathrm{S.S.}} (x) = c_{1}x + c_{2}
 $$
 Substituting the boundary conditions, we get: 
 $$
-c_{S.S.}(x) = 1 -x
+c_{\mathrm{S.S.}}(x) = 1 -x
 $$
 We now introduce the following variable transform: 
 $$
@@ -137,11 +155,11 @@ $$
 
 This is a nice result! The equation does not change shape in anyway with the variable transform!! Let's consider how the BCs evolve: 
 $$
-\phi(0, t) = c(0,t) - c_{S.S.}(0) = 1 -1 = 0
+\phi(0, t) = c(0,t) - c_{\mathrm{S.S.}}(0) = 1 -1 = 0
 $$
 
 $$
-\phi(1,t) = c(1,t) - c_{S.S.}(1) = 0 -0 = 0
+\phi(1,t) = c(1,t) - c_{\mathrm{S.S.}}(1) = 0 -0 = 0
 $$
 
 We get nice homogenous BCs which enable us to solve for $\phi(x,t)$ using separation of variables. We obtain the following result: 
@@ -183,7 +201,7 @@ We can now set $\alpha$ as a simulation parameter easily and not worry about rej
 
 #### Time-stepping
 
-First we need to pick an $\alpha$ value. Suppose we pick $\alpha = 0$ for now, we can use our stability criteria as follows: 
+We first need to pick a value for $\alpha$. Suppose we pick $\alpha = 0$ for now, we can use our stability criteria as follows: 
 $$
 \Delta t = \frac{\Delta x ^{2}}{2D} \times (\% Margin) = \frac{4\times10^{-4}}{2.0} \times 0.9 = 0.00018
 $$
