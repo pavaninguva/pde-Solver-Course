@@ -35,7 +35,7 @@ The former may be familiar to those who took A-Level Maths or IB HL Maths as, in
 $$
 \frac{dc}{dt}=f(t)
 $$
-One can solve for the trajectory of $c(t)$ from an initial value as:
+One can calculate an approximation of $c(t)$ from an initial value as:
 $$
 \frac{c^\mathrm{new}-c^\mathrm{old}}{\Delta t}=f(t^\mathrm{old})\rightarrow c^\mathrm{new}=c^\mathrm{old}+\Delta t f(t^\mathrm{old})
 $$
@@ -43,13 +43,7 @@ $$
 $$
 c^\mathrm{new}_i=c^\mathrm{old}_i+\Delta t f(t^\mathrm{old},x_i)
 $$
-The fully implicit Euler time-stepping  method uses the same idea, only the function $f$ is now evaluated at the next time step:
-$$
-c^\mathrm{new}_i=c^\mathrm{old}_i+\Delta t f(t^\mathrm{new},x_i)
-$$
-In terms of accuracy, both methods are practically identical, however, the latter has greater stability (will be examined in a later section).
-
-When the function $f$ involves derivatives of $x$, as we have discretised the $x$ space we can use a finite difference approximation of these derivatives. In the case of our  $1\mathrm{D}$ transient diffusion problem, we can write the approximation for the full equation for $c$ at a point $i$ as follows:
+When the function $f$ involves derivatives of $x$, as we have discretised the $x$ space we can use a finite difference approximation of these derivatives (The second order derivative i.e. $\frac{d^{2}c}{dx^{2}}$). In the case of our  $1\mathrm{D}$ transient diffusion problem, we can write the approximation for the full equation for $c$ at a point $i$ as follows:
 $$
 \frac{c_{i}^{new} - c_{i}^{old}}{\Delta t} = \alpha D \frac{c^{new}_{i+1}- 2c^{new}_{i} + c^{new}_{i-1}}{\Delta x^{2}} + (1-\alpha) D \frac{c^{old}_{i+1}- 2c^{old}_{i} + c^{old}_{i-1}}{\Delta x^{2}}
 $$
@@ -67,7 +61,7 @@ When $\alpha = 0$:
 $$
 \frac{c_{i}^{new} - c_{i}^{old}}{\Delta t} =  D \frac{c^{old}_{i+1}- 2c^{old}_{i} + c^{old}_{i-1}}{\Delta x^{2}}
 $$
-When a fully explicit scheme such as the forward Euler is used, the new value (moving forward in time) can be evaluated explicitly from values from the old values from the previous timestep which makes it much easier to implement than implicit methods. However, the trade off is that often, explicit time stepping requires excessively small timesteps for numerical stability while the implicit backwards Euler time-stepping is far more stable. The third method mentioned above, Crank-Nicolson, will have the same issues as implicit backwards Euler time-stepping, but will still have the same level of stability with the additional benefit of being more accurate.
+When a fully explicit scheme such as the forward Euler is used, the new value (moving forward in time) can be evaluated explicitly from values from the old values from the previous timestep which makes it much easier to implement than implicit methods. However, the trade off is that often, explicit time stepping requires excessively small timesteps for numerical stability while the implicit backwards Euler time-stepping is far more stable. The third method mentioned above, Crank-Nicolson, will have the same issues as implicit backwards Euler time-stepping, but has higher stability than the forward Euler with the additional benefit of being second order accurate.
 
 #### Stability for forward Euler time stepping
 

@@ -15,7 +15,7 @@ We have reached a point where we have explored a variety of mathematical problem
 
 ## Problem statement and derivation
 
-The are a variety of interesting PDEs that may be of interest to chemical engineers such as the Navier-Stokes equation, the Gray-Scott models, and the Schrödinger equation. However, one of particular interest that we will focus on in this exercise is the Cahn-Hilliard equation. The Cahn-Hilliard equation can model the demixing and precipitation of components from a mixture. If you recall Thermodynamics II, we can study the Gibbs energy of mixing $\Delta G _{mix}$ which gives us insight on whether the system will exhibit liquid-liquid equilibria (LLE).  We first start by considering the conventional diffusive flux expression that you should be familiar with for a species $A$: 
+The are a variety of interesting PDEs that may be of interest to chemical engineers such as the Navier-Stokes equation or Gray-Scott models. However, one of particular interest that we will focus on in this exercise is the Cahn-Hilliard equation. The Cahn-Hilliard equation can model the demixing and precipitation of components from a mixture. If you recall Thermodynamics II, we can study the Gibbs energy of mixing $\Delta G _{mix}$ which gives us insight on whether the system will exhibit liquid-liquid equilibria (LLE).  We first start by considering the conventional diffusive flux expression that you should be familiar with for a species $A$: 
 $$
 \mathbf{j} = -D \nabla a
 \\

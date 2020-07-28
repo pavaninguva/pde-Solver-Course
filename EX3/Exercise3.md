@@ -82,7 +82,7 @@ $$
 \mathrm{Pe}_{\mathrm{Cell}} = \frac{U \Delta x}{D}
 $$
 
-Suppose we keep $D = 1.0$ as per the previous diffusion problems and we specify $\mathrm{Pe}_\mathrm{Cell} = 100$, in terms of dimensionless variables ($L = 1.0$). From a stability perspective, it has been presented in the literature that $\mathrm{Pe}_{\mathrm{Cell}} < 2.0$ is necessary. We shall keep $\mathrm{Pe}_{\mathrm{Cell}} = 1.0$ which corresponds to $\Delta x = 0.01$. 
+Suppose we keep $D = 1.0$ as per the previous diffusion problems and we specify $\mathrm{Pe} = 100$, in terms of dimensionless variables ($L = 1.0$). From a stability perspective, it has been presented in the literature that $\mathrm{Pe}_{\mathrm{Cell}} < 2.0$ is necessary. We shall keep $\mathrm{Pe}_{\mathrm{Cell}} = 1.0$ which corresponds to $\Delta x = 0.01$. 
 
 To make sense of the Courant number, let us perform a similar discretisation as we did for the diffusion problem to derive the Fourier number. We consider the pure convective equation: 
 $$
