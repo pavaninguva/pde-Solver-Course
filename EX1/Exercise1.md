@@ -10,7 +10,7 @@ This is the first of four exercises to introduce how declarative PDE solvers in 
 
 After completing this first exercise, you should be able to do the following: 
 
-1. Set up a simple case within `FiPy` 
+1. Set up a simple case within `FiPy` (https://www.ctcms.nist.gov/fipy/)
 2. Understand what a mesh is in the context of numerical methods
 3. Understand the different methods of benchmarking and validating a model and simulation
 4. Perform basic visualisation of simulation results using the visualisation tools built into `FiPy` 
@@ -36,7 +36,7 @@ You may end up using commercially available solver packages in the future e.g. `
 
 ## Problem statement
 
-We use the Q3 of problem sheet B2-3 as the model problem here. This equation represents the Laplace equation in $2D$ along the domain $(x,y) \in [(0,0), (a,b)]$ :
+We use the Q3 of problem sheet B2-3 as the model problem here. This equation represents the Laplace equation in $2\mathrm{D}$ along the domain $(x,y) \in [(0,0), (a,b)]$ :
 $$
 \nabla ^{2} \phi =0 
 $$
@@ -51,9 +51,8 @@ $$
 
 ### Analytical solution
 
-Analytically, we can solve this problem using the separation of variables:
+Analytically, we can solve this problem using the separation of variables. Suppose that the solution to the equation $\phi(x,y)$ takes on the following form: 
 
-Suppose that the solution to the equation $\phi(x,y)$ takes on the following form: 
 $$
 \phi(x,y) = X(x)Y(y)
 $$
@@ -69,7 +68,7 @@ X(x) = c_{1} \cos(\lambda x) + c_{2}\sin(\lambda x),
 $$
 where $c_{1}$ and $c_{2}$ are the constants of integration and $\lambda$ is separation constant which needs to be evaluated. We use the boundary conditions to evaluate the constants and the non-trivial values of $\lambda$  
 
-Applying the appropriate BCs i.e. $X(0) = X(a) = 0$, we end up with: 
+Applying the appropriate BC i.e. $X(0) = X(a) = 0$, we end up with: 
 $$
 X(x) = \sum_{n=0}^{\infin} c_{n} \sin(\frac{n \pi x}{a}),
 $$
@@ -136,7 +135,7 @@ For the purposes of this course, the more gory details regarding the discretisat
 
 #### Setting up the mesh
 
-We first need to set up the mesh. When we look at the analytical solution of the PDE, we can see that we are able to fully evaluate $\phi$ at any point $(x,y)$ within the domain $(x,y) \in [(0,0), (1,1)]$.  However, when solving PDEs numerically, we do not have that luxury as we would then need to evaluate $\phi$ at infinite points.  Instead, the physical domain is represented as discrete chunks, thus representing the domain in a discrete and finite way that can be interpreted by a computer. 
+We first need to set up the mesh. When we look at the analytical solution of the PDE, we can see that we are able to fully evaluate $\phi$ at any point $(x,y)$ within the domain $(x,y) \in [(0,0), (1,1)]$.  However, when solving PDEs numerically, we do not have that luxury as we would then need to evaluate $\phi$ at infinite points.  Instead, the physical domain is represented as discrete chunks, thus representing the domain in a discrete and finite way that can be interpreted by a computer.
 
 `FiPy` has many in-built mesh generation tools for a variety of simple shapes e.g. a line, rectangle or sphere for example. We create the mesh in our code as follows: 
 
@@ -146,7 +145,7 @@ dx = dy = 0.01
 mesh = Grid2D (dx=dx, dy=dy, nx=nx, ny=ny)
 ```
 
-This gives us a mesh of $100 \times 100$ cells with each cell having the dimensions ($\Delta x, $$\Delta y$) of $(0.01, 0.01)$. 
+This gives us a mesh of $100 \times 100$ cells with each cell having the dimensions ($\Delta x, $$\Delta y$) of $(0.01, 0.01)$. `FiPy` uses what is known as finite volumes approach when discretising the mesh (see documentation for more details).
 
 
 
@@ -182,11 +181,11 @@ phi.constrain(valueLeft, mesh.facesLeft)
 phi.constrain(valueRight, mesh.facesRight)
 ```
 
-The code itself contains the syntax needed to  apply Neumann BCs or combinations of Neumann and Dirichlet BCs for you to explore with. 
+The code itself contains the syntax needed to  apply Neumann BCs or combinations of Neumann and Dirichlet BC for you to explore with. 
 
 #### Defining the equation
 
-The way `FiPy` requires you to declare the equation makes it highly intuitive for transport problems. This link contains alot of information regarding how different terms in an equation can be expressed in `FiPy` and what numerical schemes are available for solution: https://www.ctcms.nist.gov/fipy/documentation/numerical/index.html
+The way `FiPy` requires you to declare the equation makes it highly intuitive for transport problems. This link contains alot of inf ormation regarding how different terms in an equation can be expressed in `FiPy` and what numerical schemes are available for solution: https://www.ctcms.nist.gov/fipy/documentation/numerical/index.html
 
 In this case, our equation is quite simple:
 
