@@ -113,7 +113,6 @@ dependencies:
   - pynacl=1.4.0=py37h62dcd97_0
   - pyopenssl=19.1.0=py37_0
   - pyparsing=2.4.7=pyh9f0ad1d_0
-  - pyqt=5.12.3=py37h1834ac0_3
   - pyrsistent=0.16.0=py37he774522_0
   - pysocks=1.7.1=py37_0
   - python=3.7.7=h81c818b_4
@@ -179,5 +178,6 @@ dependencies:
     - pyqtchart==5.12
     - pyqtwebengine==5.12.1
     - pyyaml==5.3.1
+    - pyqt==5.12.3
 prefix: C:\Users\Pavan\anaconda3\envs\fipy34
 
