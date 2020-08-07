@@ -74,6 +74,7 @@ dependencies:
   - numpydoc=1.1.0=pyh9f0ad1d_0
   - openssl=1.1.1g=he774522_1
   - packaging=20.4=pyh9f0ad1d_0
+  - pandas=1.1.0=py37h1834ac0_0
   - pandoc=2.10.1=he774522_0
   - pandocfilters=1.4.2=py_1
   - paramiko=2.7.1=pyh9f0ad1d_1
