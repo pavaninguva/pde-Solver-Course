@@ -162,7 +162,7 @@ We can reinstall it manually:
 
 Step 1: Open Anaconda Prompt
 
-Step 2: Type `conda create -n fipy34_manual -c conda-forge scipy numpy matplotlib=3.2.1 spyder pandas fipy=3.4.1 -y` and press enter
+Step 2: Type `conda create -n fipy34_manual -c conda-forge scipy numpy=1.16.4 matplotlib=3.2.1 spyder pandas fipy=3.4.1 -y` and press enter
 
 Step 3: Have a cup of tea and wait for it to complete
 
