@@ -168,3 +168,5 @@ Step 3: Have a cup of tea and wait for it to complete
 
 
 If the error continues, contact Thomas Cheng via email (nok.cheng18@imperial.ac.uk). He is on standby 24/7.
+
+Note: You should choose fipy34_manual as your new environment when launching spyder from Anaconda Navigator
