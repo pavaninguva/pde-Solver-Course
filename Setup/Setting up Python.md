@@ -131,18 +131,6 @@ There is a play button at the top. You can use that to run the script. The outpu
 
 ![Python_10](C:\Users\CE-KPI15\Projects\pde-Solver-Course\Setup\Python_10.png)
 
-## Troubleshooting
-
-Manual installation
-
-Step 1: Open Anaconda Prompt
-
-Step 2: Type `conda create -n fipy34_manual -c conda-forge scipy numpy matplotlib=3.2.1 spyder pandas` and press enter
-
-Step 3: Have a cup of tea and wait for it to complete
-
-
-If the error continues, contact Thomas Cheng via email (nok.cheng18@imperial.ac.uk). He is on standby 24/7.
 
 ## Running our simulation
 
@@ -163,4 +151,20 @@ You need to keep track of the output in the iPython console.
 At this point, you are able to run the rest of the cases and modify them in the editor as you desire. Please explore the environment and familiarize yourself with the features of Spyder. This is a decent opportunity to get familiar with python. 
 
 
+## Troubleshooting
 
+Common errors:
+
+- Cannot launch spyder (cannot find Qt)
+- Unable to load solver when running exercises
+
+We can reinstall it manually:
+
+Step 1: Open Anaconda Prompt
+
+Step 2: Type `conda create -n fipy34_manual -c conda-forge scipy numpy matplotlib=3.2.1 spyder pandas` and press enter
+
+Step 3: Have a cup of tea and wait for it to complete
+
+
+If the error continues, contact Thomas Cheng via email (nok.cheng18@imperial.ac.uk). He is on standby 24/7.
