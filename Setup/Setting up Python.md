@@ -156,7 +156,6 @@ At this point, you are able to run the rest of the cases and modify them in the 
 Common errors:
 
 - Cannot launch spyder (cannot find Qt)
-- Unable to load solver when running exercises
 
 We can reinstall it manually:
 
@@ -167,6 +166,21 @@ Step 2: Type `conda update -n base conda` to update anaconda
 Step 3: Type `conda create -n fipy34_manual -c conda-forge scipy numpy=1.16.4 matplotlib=3.2.1 spyder pandas fipy=3.4.1 -y` and press enter
 
 Step 4: Have a cup of tea and wait for it to complete
+
+
+- Unable to load solver when running exercises
+
+We will reinstall scipy and numpy
+
+Step 1: Open Anaconda Prompt
+
+Step 2: Type `conda update -n base conda` to update anaconda
+
+Step 3: Type `conda activate fipy34` to activate environment
+
+Step 4: Type `conda remove --force numpy scipy` followed by `pip install numpy scipy`
+
+Step 5: Have a cup of tea and wait for it to complete
 
 
 If the error continues, contact Thomas Cheng via email (nok.cheng18@imperial.ac.uk). He is on standby 24/7.
