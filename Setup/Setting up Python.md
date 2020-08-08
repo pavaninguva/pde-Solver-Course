@@ -185,6 +185,6 @@ Step 4: Type `conda remove --force numpy scipy` and press enter, then type `pip 
 Step 5: Have a cup of tea and wait for it to complete
 
 
-If the error continues, contact Thomas Cheng via email (nok.cheng18@imperial.ac.uk). He is on standby 24/7.
+**If the error continues, contact Thomas Cheng via email (nok.cheng18@imperial.ac.uk). He is on standby 24/7.**
 
 
