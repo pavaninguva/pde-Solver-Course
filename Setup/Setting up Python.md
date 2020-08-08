@@ -180,7 +180,7 @@ Step 2: Type `conda update -n base conda` to update anaconda
 
 Step 3: Type `conda activate fipy34` to activate environment
 
-Step 4: Type `conda remove --force numpy scipy` followed by `pip install numpy scipy`
+Step 4: Type `conda remove --force numpy scipy` and press enter, then type `pip install numpy scipy` and press enter
 
 Step 5: Have a cup of tea and wait for it to complete
 
