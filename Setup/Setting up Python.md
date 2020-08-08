@@ -155,7 +155,7 @@ At this point, you are able to run the rest of the cases and modify them in the 
 
 Common errors:
 
-- Cannot launch spyder (cannot find Qt)
+### Cannot launch spyder (cannot find Qt)
 
 We can reinstall it manually:
 
@@ -167,8 +167,10 @@ Step 3: Type `conda create -n fipy34_manual -c conda-forge scipy numpy=1.16.4 ma
 
 Step 4: Have a cup of tea and wait for it to complete
 
+Note: You should choose fipy34_manual as your new environment when launching spyder from Anaconda Navigator
 
-- Unable to load solver when running exercises
+
+### Unable to load solver when running exercises
 
 We will reinstall scipy and numpy
 
@@ -185,4 +187,4 @@ Step 5: Have a cup of tea and wait for it to complete
 
 If the error continues, contact Thomas Cheng via email (nok.cheng18@imperial.ac.uk). He is on standby 24/7.
 
-Note: You should choose fipy34_manual as your new environment when launching spyder from Anaconda Navigator
+
