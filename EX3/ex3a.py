@@ -29,9 +29,9 @@ c.setValue(0.05*(1.0/(sigma*numerix.sqrt(2*numerix.pi)))*numerix.exp(-0.5*((x-1.
 
 # defining the equation
 # We write three equations: pure convection, pure diffusion and convection-diffusion
-eq = TransientTerm() + VanLeerConvectionTerm(coeff=convCoeff) == 0
+# eq = TransientTerm() + VanLeerConvectionTerm(coeff=convCoeff) == 0
 # eq = TransientTerm() - DiffusionTerm(coeff=(1/peclet)) == 0
-# eq = TransientTerm() + VanLeerConvectionTerm(coeff=convCoeff) - DiffusionTerm(coeff=(1.0/peclet)) == 0
+eq = TransientTerm() + VanLeerConvectionTerm(coeff=convCoeff) - DiffusionTerm(coeff=(1.0/peclet)) == 0
 
 
 # The choice of dt and dx in a convection problem is a bit more complicated 
