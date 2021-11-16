@@ -1,3 +1,13 @@
+# Front Matter
+If you found the material in this repository helpful, please consider citing the following article in your work:
+Pavan Inguva, Vijesh J. Bhute, Thomas N.H. Cheng, Pierre J. Walker,
+Introducing students to research codes: A short course on solving partial differential equations in Python,
+Education for Chemical Engineers,
+Volume 36,
+2021,
+Pages 1-11,
+https://doi.org/10.1016/j.ece.2021.01.011.
+
 # Introduction
 
 We present an introductory course on using `FiPy`, a PDE solver in python. It is hoped that the exercises in the module will expose the user to both the syntax needed to solve a problem of interest and also certain mathematical and numerical features that provide insight on general issues related to numerically solving PDEs. 
